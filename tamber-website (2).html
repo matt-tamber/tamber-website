@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tamber — Residential Construction</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@200;300;400&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--white:#fff;--off:#f7f6f3;--ink:#0f0e0c;--mid:#5a5754;--light:#a8a6a2;--rule:rgba(15,14,12,0.1);--accent:#8c7355}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Outfit',sans-serif;font-weight:300;color:var(--ink);background:var(--white);font-size:14px;line-height:1.6}
+.site{display:flex;flex-direction:column;height:100vh}
+.page{display:none;flex:1;overflow-y:auto}
+.page.active{display:block}
+
+nav{flex-shrink:0;background:var(--white);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:54px;position:relative;z-index:200}
+.logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:400;letter-spacing:0.06em;color:var(--ink);cursor:pointer;user-select:none}
+.nav-links{display:flex;list-style:none}
+.nav-links li a{display:block;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--light);text-decoration:none;padding:0 1.2rem;height:54px;line-height:54px;transition:color 0.2s;cursor:pointer;border-bottom:2px solid transparent;user-select:none}
+.nav-links li a:hover{color:var(--ink)}
+.nav-links li a.active{color:var(--ink);border-bottom:2px solid var(--accent)}
+
+/* HOME */
+.hero{position:relative;height:calc(100vh - 54px);overflow:hidden;background:#1a1814}
+.hslide{position:absolute;inset:0;opacity:0;transition:opacity 1s ease}
+.hslide.on{opacity:1}
+.hslide-1{background:linear-gradient(160deg,#4a4038 0%,#2a2018 60%,#1a1410 100%)}
+.hslide-2{background:linear-gradient(160deg,#3a4838 0%,#1e2c1e 60%,#101810 100%)}
+.hslide-3{background:linear-gradient(160deg,#3a3848 0%,#1e1e2c 60%,#101018 100%)}
+.hero-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,14,12,0.2) 0%,rgba(15,14,12,0) 40%,rgba(15,14,12,0.6) 100%)}
+.hero-top{position:absolute;top:0;left:0;right:0;z-index:2;padding:2rem 2.5rem;display:flex;justify-content:space-between}
+.hero-tag{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.45)}
+.hero-cnt{font-size:0.65rem;letter-spacing:0.12em;color:rgba(255,255,255,0.3)}
+.hero-bottom{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:2.5rem}
+.hero-hl{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5.5vw,5rem);font-weight:300;line-height:1.0;color:#fff;letter-spacing:-0.02em}
+.hero-hl em{font-style:italic}
+.hero-sub{margin-top:0.8rem;font-size:0.8rem;color:rgba(255,255,255,0.45);max-width:300px;line-height:1.7}
+.hero-dots{display:flex;gap:5px;margin-top:1.5rem}
+.hdot{width:18px;height:1.5px;background:rgba(255,255,255,0.25);cursor:pointer;transition:all 0.3s}
+.hdot.on{width:34px;background:rgba(255,255,255,0.85)}
+
+/* PROJECTS */
+.pg-header{padding:3rem 2.5rem 2rem;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:flex-end}
+.pg-title{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:300;color:var(--ink)}
+.pg-meta{font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--light)}
+.filters{display:flex;border-bottom:1px solid var(--rule);overflow-x:auto}
+.filter-btn{font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--light);padding:0.9rem 1.4rem;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.2s;font-family:'Outfit',sans-serif}
+.filter-btn:hover{color:var(--ink)}
+.filter-btn.on{color:var(--ink);border-bottom:2px solid var(--accent)}
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.pcard{position:relative;overflow:hidden;aspect-ratio:4/3;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);cursor:pointer}
+.pcard:nth-child(3n){border-right:none}
+.pcard-bg{position:absolute;inset:0;transition:transform 0.7s cubic-bezier(0.25,0,0,1)}
+.pcard:hover .pcard-bg{transform:scale(1.05)}
+.pcard-veil{position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,14,12,0.65) 0%,transparent 60%)}
+.pcard-info{position:absolute;bottom:0;left:0;right:0;padding:1.5rem}
+.pcard-idx{font-size:0.58rem;letter-spacing:0.14em;color:rgba(255,255,255,0.3);margin-bottom:0.4rem}
+.pcard-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:300;color:#fff;line-height:1.2}
+.pcard-loc{font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:0.3rem}
+
+/* PROCESS */
+.proc-hero{background:var(--off);border-bottom:1px solid var(--rule);padding:4rem 2.5rem 3rem;display:grid;grid-template-columns:1fr 1.5fr;gap:4rem;align-items:end}
+.proc-label{font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem}
+.proc-label::before{content:'';display:block;width:20px;height:1px;background:var(--accent)}
+.proc-headline{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:300;line-height:1.2;color:var(--ink)}
+.proc-headline em{font-style:italic}
+.proc-intro{font-size:0.84rem;line-height:1.9;color:var(--mid)}
+.proc-steps{border-bottom:1px solid var(--rule)}
+.proc-step{display:grid;grid-template-columns:80px 1fr 1.8fr;border-bottom:1px solid var(--rule);align-items:start}
+.proc-step:last-child{border-bottom:none}
+.proc-step-num{padding:2rem 1.5rem;font-size:0.62rem;letter-spacing:0.14em;color:var(--accent);border-right:1px solid var(--rule)}
+.proc-step-title{padding:2rem 2rem;font-size:1rem;font-weight:400;color:var(--ink);border-right:1px solid var(--rule)}
+.proc-step-body{padding:2rem 2.5rem;font-size:0.8rem;line-height:1.85;color:var(--mid)}
+.benefits{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
+.benefit{padding:2.5rem;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.benefit:nth-child(3n){border-right:none}
+.benefit:nth-last-child(-n+3){border-bottom:none}
+.benefit-icon{font-size:1.2rem;margin-bottom:1rem;color:var(--accent)}
+.benefit-title{font-size:0.9rem;font-weight:400;color:var(--ink);margin-bottom:0.6rem}
+.benefit-text{font-size:0.78rem;line-height:1.8;color:var(--mid)}
+
+/* STUDIO */
+.studio-hero{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)}
+.studio-img{min-height:420px;background:linear-gradient(135deg,#d0c8bc 0%,#9c9488 50%,#6c6458 100%);position:relative;overflow:hidden}
+.studio-img svg{position:absolute;inset:0;width:100%;height:100%}
+.studio-text{padding:4rem 3rem;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--rule)}
+.studio-eyebrow{font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem}
+.studio-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--accent)}
+.studio-heading{font-family:'Playfair Display',serif;font-size:2rem;font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:1.2rem}
+.studio-heading em{font-style:italic}
+.studio-body{font-size:0.84rem;line-height:1.9;color:var(--mid)}
+.studio-team{border-bottom:1px solid var(--rule)}
+.team-head{padding:2rem 2.5rem;border-bottom:1px solid var(--rule)}
+.team-head-title{font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--light)}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.member{padding:2.5rem;border-right:1px solid var(--rule)}
+.member:last-child{border-right:none}
+.member-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#d0c8bc,#a8a098);margin-bottom:1.2rem}
+.member-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:400;color:var(--ink);margin-bottom:0.3rem}
+.member-role{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--light)}
+.member-bio{font-size:0.78rem;line-height:1.75;color:var(--mid);margin-top:0.8rem}
+.studio-values{display:grid;grid-template-columns:1fr 2fr;padding:4rem 2.5rem;gap:4rem;background:var(--off);border-bottom:1px solid var(--rule)}
+.sv-label{font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--light)}
+.sv-quote{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:300;line-height:1.35;color:var(--ink)}
+.sv-quote em{font-style:italic;color:var(--accent)}
+
+/* CONTACT */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 54px)}
+.contact-left{padding:4rem 3rem;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:space-between}
+.contact-hl{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:1.5rem}
+.contact-hl em{font-style:italic}
+.contact-body{font-size:0.84rem;line-height:1.9;color:var(--mid);max-width:380px}
+.contact-blocks{margin-top:3rem;display:flex;flex-direction:column;gap:2rem}
+.contact-block-label{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--light);margin-bottom:0.6rem}
+.contact-block a{display:block;font-size:0.9rem;color:var(--ink);text-decoration:none;margin-bottom:0.3rem}
+.contact-block a:hover{color:var(--accent)}
+.contact-social{display:flex;gap:1.5rem;margin-top:3rem}
+.contact-social a{font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--light);text-decoration:none}
+.contact-social a:hover{color:var(--ink)}
+.contact-right{padding:4rem 3rem;background:var(--off)}
+.form-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:300;color:var(--ink);margin-bottom:2rem}
+.form-row{margin-bottom:1.4rem}
+.form-label{font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--light);display:block;margin-bottom:0.5rem}
+.form-input{width:100%;border:none;border-bottom:1px solid var(--rule);background:none;padding:0.6rem 0;font-size:0.86rem;font-family:'Outfit',sans-serif;font-weight:300;color:var(--ink);outline:none;transition:border-color 0.2s}
+.form-input:focus{border-bottom-color:var(--accent)}
+.form-input::placeholder{color:var(--light)}
+textarea.form-input{resize:none;height:100px;border:1px solid var(--rule);padding:0.8rem;margin-top:0.5rem}
+textarea.form-input:focus{border-color:var(--accent)}
+.form-select{width:100%;border:none;border-bottom:1px solid var(--rule);background:none;padding:0.6rem 0;font-size:0.86rem;font-family:'Outfit',sans-serif;font-weight:300;color:var(--ink);outline:none;appearance:none;cursor:pointer}
+.form-submit{margin-top:2rem;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:#fff;background:var(--ink);padding:0.9rem 2.2rem;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:300;width:100%;transition:background 0.2s}
+.form-submit:hover{background:var(--accent)}
+</style>
+</head>
+<body>
+<div class="site">
+
+<nav>
+  <div class="logo" onclick="showPage('home')">Tamber</div>
+  <ul class="nav-links">
+    <li><a onclick="showPage('projects')" id="nav-projects">Projects</a></li>
+    <li><a onclick="showPage('process')" id="nav-process">Process</a></li>
+    <li><a onclick="showPage('studio')" id="nav-studio">Studio</a></li>
+    <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="home">
+  <div class="hero">
+    <div class="hslide hslide-1 on" id="hs0"></div>
+    <div class="hslide hslide-2" id="hs1"></div>
+    <div class="hslide hslide-3" id="hs2"></div>
+    <div class="hero-veil"></div>
+    <div class="hero-top">
+      <span class="hero-tag">Residential construction — Victoria</span>
+      <span class="hero-cnt" id="hcnt">01 / 03</span>
+    </div>
+    <div class="hero-bottom">
+      <h1 class="hero-hl">Construction<br>driven by <em>craft.</em></h1>
+      <p class="hero-sub">High quality residential builds across Melbourne and regional Victoria.</p>
+      <div class="hero-dots">
+        <div class="hdot on" onclick="goSlide(0)"></div>
+        <div class="hdot" onclick="goSlide(1)"></div>
+        <div class="hdot" onclick="goSlide(2)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="page" id="projects">
+  <div class="pg-header">
+    <h1 class="pg-title">Projects —</h1>
+    <span class="pg-meta">Selected works</span>
+  </div>
+  <div class="filters">
+    <button class="filter-btn on" onclick="filterProj(this,'all')">All</button>
+    <button class="filter-btn" onclick="filterProj(this,'residential')">Residential</button>
+    <button class="filter-btn" onclick="filterProj(this,'coastal')">Coastal</button>
+    <button class="filter-btn" onclick="filterProj(this,'regional')">Regional</button>
+    <button class="filter-btn" onclick="filterProj(this,'renovation')">Renovation</button>
+  </div>
+  <div class="proj-grid" id="projGrid"></div>
+</div>
+
+<!-- PROCESS -->
+<div class="page" id="process">
+  <div class="proc-hero">
+    <div>
+      <div class="proc-label">Our process</div>
+      <h1 class="proc-headline">Construction<br>without the <em>surprises.</em></h1>
+    </div>
+    <p class="proc-intro">We've built our process around one simple belief: that building a home should be straightforward, transparent, and well-crafted. From the first conversation to handover, every step is clear, considered and communicated.</p>
+  </div>
+  <div class="proc-steps">
+    <div class="proc-step">
+      <div class="proc-step-num">01</div>
+      <div class="proc-step-title">Discovery &amp; briefing</div>
+      <div class="proc-step-body">We begin by listening. A site visit, a conversation about how you live, and a clear brief that shapes every decision that follows. We take on fewer projects so we can give each one our full attention.</div>
+    </div>
+    <div class="proc-step">
+      <div class="proc-step-num">02</div>
+      <div class="proc-step-title">Design &amp; documentation</div>
+      <div class="proc-step-body">Working with your architect — or one of our trusted collaborators — we document the project thoroughly before a single sod is turned. Fewer surprises on site means fewer costs and delays.</div>
+    </div>
+    <div class="proc-step">
+      <div class="proc-step-num">03</div>
+      <div class="proc-step-title">Transparent pricing</div>
+      <div class="proc-step-body">Clear, itemised costings early in the process. No opaque estimates, no last-minute variations. You know what you're getting — and what it costs — before we begin.</div>
+    </div>
+    <div class="proc-step">
+      <div class="proc-step-num">04</div>
+      <div class="proc-step-title">Construction</div>
+      <div class="proc-step-body">Owner-led builds mean the person who walked the site with you is the person managing it. We work with a select group of trusted tradespeople and hold ourselves to the same standard we hold them.</div>
+    </div>
+    <div class="proc-step">
+      <div class="proc-step-num">05</div>
+      <div class="proc-step-title">Handover &amp; beyond</div>
+      <div class="proc-step-body">We walk you through every detail of your completed home. Our relationship doesn't end at handover — we're available for questions and care long after you've moved in.</div>
+    </div>
+  </div>
+  <div class="benefits">
+    <div class="benefit"><div class="benefit-icon">◎</div><div class="benefit-title">Project predictability</div><p class="benefit-text">Clear schedules, transparent budgets and no hidden surprises. You always know where the project stands.</p></div>
+    <div class="benefit"><div class="benefit-icon">◈</div><div class="benefit-title">Owner-led delivery</div><p class="benefit-text">The builder you meet is the builder on site. Continuity of care and accountability at every stage.</p></div>
+    <div class="benefit"><div class="benefit-icon">◇</div><div class="benefit-title">Material integrity</div><p class="benefit-text">We specify and source materials for longevity, performance and character — not just cost.</p></div>
+    <div class="benefit"><div class="benefit-icon">◉</div><div class="benefit-title">Trusted trades</div><p class="benefit-text">A consistent team of skilled subcontractors we've worked with for years and genuinely trust.</p></div>
+    <div class="benefit"><div class="benefit-icon">◫</div><div class="benefit-title">Considered design</div><p class="benefit-text">We work closely with architects and designers to ensure the build honours the intent of the design.</p></div>
+    <div class="benefit"><div class="benefit-icon">◬</div><div class="benefit-title">Long-term value</div><p class="benefit-text">Homes built to endure — structurally, aesthetically and in the way they respond to how you live.</p></div>
+  </div>
+</div>
+
+<!-- STUDIO -->
+<div class="page" id="studio">
+  <div class="studio-hero">
+    <div class="studio-img">
+      <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg">
+        <rect width="600" height="420" fill="#d0c8bc"/>
+        <line x1="0" y1="420" x2="600" y2="0" stroke="rgba(140,115,85,0.18)" stroke-width="0.8"/>
+        <line x1="0" y1="310" x2="600" y2="80" stroke="rgba(140,115,85,0.12)" stroke-width="0.8"/>
+        <rect x="130" y="90" width="260" height="210" stroke="rgba(140,115,85,0.22)" stroke-width="0.8" fill="rgba(255,255,255,0.08)"/>
+        <rect x="170" y="130" width="180" height="130" stroke="rgba(140,115,85,0.14)" stroke-width="0.8" fill="none"/>
+        <circle cx="310" cy="230" r="70" stroke="rgba(140,115,85,0.1)" stroke-width="0.8" fill="none"/>
+      </svg>
+    </div>
+    <div class="studio-text">
+      <div class="studio-eyebrow">The studio</div>
+      <h1 class="studio-heading">A small team.<br><em>Serious about</em><br>the work.</h1>
+      <p class="studio-body">Tamber is a residential construction company based in Victoria. We work with homeowners, architects and designers who care about quality, craft and longevity.<br><br>Every project is owner-led. The person you meet at the first site visit is the person who builds your home — and the person you call when you need us.</p>
+    </div>
+  </div>
+  <div class="studio-team">
+    <div class="team-head"><div class="team-head-title">The team</div></div>
+    <div class="team-grid">
+      <div class="member">
+        <div class="member-avatar"></div>
+        <div class="member-name">Your Name</div>
+        <div class="member-role">Founder &amp; Builder</div>
+        <p class="member-bio">Add a short bio here — your background, what drives your approach to building, and what you care about most in the work.</p>
+      </div>
+      <div class="member">
+        <div class="member-avatar" style="background:linear-gradient(135deg,#c0ccb8,#8a9c88)"></div>
+        <div class="member-name">Team Member</div>
+        <div class="member-role">Site Manager</div>
+        <p class="member-bio">Introduce your key team members here — who they are, what they bring to a build, and how long they've been part of the team.</p>
+      </div>
+      <div class="member">
+        <div class="member-avatar" style="background:linear-gradient(135deg,#c8c0d0,#9890a8)"></div>
+        <div class="member-name">Team Member</div>
+        <div class="member-role">Project Coordinator</div>
+        <p class="member-bio">A third team member or collaborator. Keep it brief and human — clients want to know who they're actually working with.</p>
+      </div>
+    </div>
+  </div>
+  <div class="studio-values">
+    <div class="sv-label">What we believe</div>
+    <p class="sv-quote">Good buildings don't shout. They simply <em>fit.</em> They age with grace, and they make the people inside them feel at <em>home.</em></p>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="contact">
+  <div class="contact-wrap">
+    <div class="contact-left">
+      <div>
+        <h1 class="contact-hl">Let's build<br>something <em>worth keeping.</em></h1>
+        <p class="contact-body">Get in touch to discuss your project. We work across Melbourne and regional Victoria, and take on a limited number of builds each year to ensure every home gets the attention it deserves.</p>
+        <div class="contact-blocks">
+          <div class="contact-block">
+            <div class="contact-block-label">General enquiries</div>
+            <a href="mailto:hello@tamber.com.au">hello@tamber.com.au</a>
+            <a href="tel:+61400000000">0400 000 000</a>
+          </div>
+          <div class="contact-block">
+            <div class="contact-block-label">Location</div>
+            <a>Melbourne &amp; Regional Victoria</a>
+          </div>
+        </div>
+        <div class="contact-social">
+          <a href="#">Instagram ↗</a>
+          <a href="#">LinkedIn ↗</a>
+          <a href="#">Houzz ↗</a>
+        </div>
+      </div>
+      <div style="font-size:0.65rem;color:var(--light);letter-spacing:0.06em;margin-top:3rem">© 2025 Tamber</div>
+    </div>
+    <div class="contact-right">
+      <div class="form-title">Start a conversation</div>
+      <div class="form-row">
+        <label class="form-label">Full name</label>
+        <input class="form-input" type="text" placeholder="Your name">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Phone</label>
+        <input class="form-input" type="tel" placeholder="04xx xxx xxx">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Project type</label>
+        <select class="form-select">
+          <option value="" disabled selected>Select one</option>
+          <option>New residential build</option>
+          <option>Renovation / extension</option>
+          <option>Knockdown rebuild</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Tell us about your project</label>
+        <textarea class="form-input" placeholder="Location, rough budget, timeline, anything else…"></textarea>
+      </div>
+      <button class="form-submit">Send enquiry</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const projects = [
+  {name:'The Ridgeline House',loc:'Mornington Peninsula',year:'2024',type:'coastal',bg:'linear-gradient(150deg,#cec6bc,#9c9088,#6c6058)'},
+  {name:'Fernside Retreat',loc:'Daylesford',year:'2024',type:'regional',bg:'linear-gradient(150deg,#bcc8b8,#8a9c88,#5a6c58)'},
+  {name:'Oak Lane Residence',loc:'Kyneton',year:'2023',type:'residential',bg:'linear-gradient(150deg,#c8c0d0,#9890a8,#686078)'},
+  {name:'Wattle Hill House',loc:'Fitzroy North',year:'2023',type:'renovation',bg:'linear-gradient(150deg,#c8c4b8,#9c9888,#6c6858)'},
+  {name:'Bluestone Cottage',loc:'Ballarat',year:'2022',type:'renovation',bg:'linear-gradient(150deg,#b8c4c0,#8a9c98,#5a6c68)'},
+  {name:'Saltmarsh House',loc:'Barwon Heads',year:'2022',type:'coastal',bg:'linear-gradient(150deg,#d0c8b8,#a0988a,#706858)'},
+  {name:'Canopy House',loc:'Warrandyte',year:'2022',type:'regional',bg:'linear-gradient(150deg,#c4ccb8,#909c88,#606c58)'},
+  {name:'The Lane',loc:'Brunswick',year:'2021',type:'residential',bg:'linear-gradient(150deg,#c0bcc8,#908ca0,#605c70)'},
+  {name:'Timber Pavilion',loc:'Healesville',year:'2021',type:'regional',bg:'linear-gradient(150deg,#ccc4b8,#9c9488,#6c6458)'},
+];
+
+function renderProjects(filter) {
+  const grid = document.getElementById('projGrid');
+  const list = filter === 'all' ? projects : projects.filter(p => p.type === filter);
+  grid.innerHTML = list.map((p, i) => `
+    <div class="pcard">
+      <div class="pcard-bg" style="background:${p.bg}"></div>
+      <div class="pcard-veil"></div>
+      <div class="pcard-info">
+        <div class="pcard-idx">0${i + 1}</div>
+        <div class="pcard-name">${p.name}</div>
+        <div class="pcard-loc">${p.loc} · ${p.year}</div>
+      </div>
+    </div>`).join('');
+}
+
+function filterProj(btn, type) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderProjects(type);
+}
+
+renderProjects('all');
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById('nav-' + id);
+  if (el) el.classList.add('active');
+  document.querySelector('.page.active').scrollTop = 0;
+}
+
+let cur = 0;
+const slides = [document.getElementById('hs0'), document.getElementById('hs1'), document.getElementById('hs2')];
+const dots = document.querySelectorAll('.hdot');
+
+function goSlide(n) {
+  slides[cur].classList.remove('on');
+  dots[cur].classList.remove('on');
+  cur = n;
+  slides[cur].classList.add('on');
+  dots[cur].classList.add('on');
+  document.getElementById('hcnt').textContent = '0' + (cur + 1) + ' / 03';
+}
+
+setInterval(() => goSlide((cur + 1) % 3), 4500);
+</script>
+</body>
+</html>
